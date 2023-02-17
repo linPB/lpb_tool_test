@@ -3,6 +3,9 @@
     "description": "这是一个个人小工具测试",
     "type": "library",
     "autoload": {
+        "files": [
+            "functions.php"
+        ],
         "psr-4": {
             "Linpeibing\\LpbTool\\": "src/lpb/tool"
         }
@@ -17,6 +20,7 @@
     "require": {
         "php": "^7.2",
         "psr/container": "^1.1.1",
-        "illuminate/database": "8.x-dev"
+        "illuminate/database": "8.x-dev",
+        "phpoffice/phpspreadsheet": "^1.25"
     }
 }

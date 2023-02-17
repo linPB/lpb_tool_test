@@ -8,17 +8,24 @@
  */
 
 require "vendor/autoload.php";
+
 use Linpeibing\LpbTool\DB;
 
-try {
-    $db = (new DB)->get();
-    $article = $db::table('test_tb')->first();
-    var_dump($article);
+//    $db = (new DB)->get();
+//    $rows = $db::table('test_tb')->get()->toArray();
 
-    $db::table('test_tb')->insert(
-        ['title' => 'c', 'content' => "cc"]
-    );
+//    $arr = ["A1"=>"创建时间","B1"=>"姓名","C1"=>"手机号","D1"=>"来源","E1"=>"身份",
+//        "F1"=>"付费状态","G1"=>"幼儿园","H1"=>"用户","I1"=>"地区","J1"=>"渠道","K1"=>"销售","L1"=>"运营"
+//    ];
+//    saveLocalExcel($arr, [
+//        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+//        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+//        [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+//    ],"全部用户","xls");
 
-} catch (Exception $e) {
-    var_dump($e->getMessage());
-}
+calculateAttendanceForZhiJie("storage/111.xlsx");
+
+
+
+
+
