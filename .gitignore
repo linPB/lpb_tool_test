@@ -3,4 +3,5 @@
 .svn
 .env
 vendor
-config/
+config/database.php
+data_list
