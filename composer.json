@@ -14,5 +14,8 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "psr/container": "^1.1.1",
+        "illuminate/database": "8.x-dev"
+    }
 }
