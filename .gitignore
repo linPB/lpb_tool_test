@@ -2,4 +2,5 @@
 .project
 .svn
 .env
-vender/
+vendor
+config/
