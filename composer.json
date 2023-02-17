@@ -1,0 +1,18 @@
+{
+    "name": "linpeibing/lpb_tool",
+    "description": "这是一个个人小工具测试",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Linpeibing\\LpbTool\\": "src/lpb/tool"
+        }
+    },
+    "authors": [
+        {
+            "name": "linpeibing",
+            "email": "1938545561@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
