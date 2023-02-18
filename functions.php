@@ -56,6 +56,16 @@ function downloadExcel(array $arr, array $data, string $name="", string $type="X
 
 function saveLocalExcel(array $arr, array $data, string $name="", string $type="Xlsx")
 {
+    //    $arr = ["A1"=>"创建时间","B1"=>"姓名","C1"=>"手机号","D1"=>"来源","E1"=>"身份",
+    //        "F1"=>"付费状态","G1"=>"幼儿园","H1"=>"用户","I1"=>"地区","J1"=>"渠道","K1"=>"销售","L1"=>"运营"
+    //    ];
+
+    //    $data = [
+    //        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    //        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+    //        [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+    //    ];
+
     //文件名处置
     if(empty($name)){
         $name=time();
