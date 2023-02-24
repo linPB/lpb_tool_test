@@ -1,0 +1,11 @@
+<?php
+/**
+ * Created by PhpStorm
+ * Func: log库导数据
+ * User: lpb
+ * Date: 2023/2/24
+ * Time: 11:10
+ */
+return [
+    "test_log" => "select * from test_log_tb",
+];

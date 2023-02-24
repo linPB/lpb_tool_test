@@ -1,0 +1,11 @@
+<?php
+/**
+ * Created by PhpStorm
+ * Func: smp库导数据
+ * User: lpb
+ * Date: 2023/2/24
+ * Time: 11:09
+ */
+return [
+    "test" => "select * from test_tb",
+];
