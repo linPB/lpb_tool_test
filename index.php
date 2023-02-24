@@ -8,14 +8,13 @@
  */
 
 require "vendor/autoload.php";
+$smp_lists = require "data_list/smp.php";
 
 use Linpeibing\LpbTool\DB;
 
-//    $db = (new DB)->get();
-//    $rows = $db::table('test_tb')->get()->toArray();
+// calculateAttendanceForZhiJie("original.xlsx");
 
-calculateAttendanceForZhiJie("original.xlsx");
-
+parseExportCsv2($smp_lists['smp_item_score']['时装']['column'], $smp_lists['smp_item_score']['时装']['sql'], "smp_item_score");
 
 
 

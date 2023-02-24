@@ -9,8 +9,78 @@
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Linpeibing\LpbTool\DB;
 
 const LocalFilePath = "storage/";
+
+/**
+ * 方法1：  打开一次文件,以追加的方式写入数据，会一直占用该文件资源，直到文件被关闭，资源被释放
+ * @param array $arr
+ * @param array $data
+ * @param string $name
+ * @return void
+ */
+function exportCsv1(array $arr, array $data, string $name=""){
+    $file = empty($name) ? date('YmdHis').'_export.csv' : $name."_".date('YmdHis').'_export.csv';
+    $fp = fopen(LocalFilePath.$file,'w+'); //w+以追加的方式写入文件
+    if(flock($fp,LOCK_EX)){
+        //文件加独占锁，是否加锁看实际需求 共享锁LOCK_SH 独占锁LOCK_EX
+        fwrite($fp, chr(0xEF).chr(0xBB).chr(0xBF));
+        fputcsv($fp,$arr);
+        foreach($data as $key => $val){
+            fputcsv($fp,$val); # fputcsv需要使用一维数组做为参数
+        }
+    }
+    fclose($fp);
+}
+
+
+/**
+ * 方法2：  创建文件后以追加的方式写入数据，每次都会打开并关闭文件，会增加I/O操作，但是会减少文件的占用
+ * @param array $arr
+ * @param array $data
+ * @param string $name
+ * @return void
+ */
+function exportCsv2(array $arr, array $data, string $name = ""){
+    $name = empty($name) ? date('YmdHis').'_export.csv' : $name."_".date('YmdHis').'_export.csv';
+    $file = LocalFilePath.$name;
+    file_put_contents($file,chr(0xEF).chr(0xBB).chr(0xBF));//添加BOM头，解决乱码问题
+    file_put_contents($file,implode(',',$arr).PHP_EOL,FILE_APPEND);//以追加方式写入
+    foreach($data as $key => $val){
+        file_put_contents($file,implode(',',$val).PHP_EOL,FILE_APPEND);
+    }
+}
+
+/**
+ * 方法2 的 改良版 分段到数据
+ * @param array $arr
+ * @param string $str
+ * @param string $name
+ * @return void
+ * @throws Exception
+ */
+function parseExportCsv2(array $arr, string $str, string $name = ""){
+    $name = empty($name) ? date('YmdHis').'_export.csv' : $name."_".date('YmdHis').'_export.csv';
+    $file = LocalFilePath.$name.date('YmdHis').'_export.csv';
+    file_put_contents($file,chr(0xEF).chr(0xBB).chr(0xBF));//添加BOM头，解决乱码问题
+    file_put_contents($file,implode(',',$arr).PHP_EOL,FILE_APPEND);//以追加方式写入
+
+    $db = (new DB)->get();
+    $count_obj = $db::select("select count(*) as count from ($str) as a");
+    $count = $count_obj[0]->count;
+    $nums = 10000;
+    $step = $count/$nums;
+    for($i = 0; $i < $step; $i++) {
+        $start = $i * 10000;
+        $rows = $db::select( "$str LIMIT $start,$nums");
+        $rows = json_decode(json_encode($rows), true);
+        var_dump("起始:$start 数量段：". count($rows));
+        foreach($rows as $row){
+            file_put_contents($file,implode(',',$row).PHP_EOL,FILE_APPEND);
+        }
+    }
+}
 
 /**
  * 对Spreadsheet方法封装
@@ -21,14 +91,10 @@ const LocalFilePath = "storage/";
  * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
  */
 function downloadExcel(array $arr, array $data, string $name="", string $type="Xlsx"){
-    //文件名处置
-    if(empty($name)){
-        $name=time();
-    }else{
-        $name = $name."_".time();
-    }
+    # 文件名处置
+    $name = empty($name) ? date('YmdHis') : $name."_".date('YmdHis');
 
-    //内容设置
+    # 内容设置
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
     foreach($arr as $k=>$v){
@@ -36,10 +102,10 @@ function downloadExcel(array $arr, array $data, string $name="", string $type="X
     }
     $sheet->fromArray($data,null,"A2");
 
-    //样式设置
+    # 样式设置
     $sheet->getDefaultColumnDimension()->setWidth(12);
 
-    //设置下载与后缀
+    # 设置下载与后缀
     if($type=="Xlsx"){
         header("Content-Type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         $suffix = "xlsx";
@@ -49,12 +115,12 @@ function downloadExcel(array $arr, array $data, string $name="", string $type="X
         $suffix = "xls";
     }
     header("Content-Disposition:attachment;filename=$name.$suffix");
-    header("Cache-Control:max-age=0");//缓存控制
+    header("Cache-Control:max-age=0"); # 缓存控制
     $writer = IOFactory::createWriter($spreadsheet,$type);
-    $writer->save("php://output");//数据流
+    $writer->save("php://output"); # 数据流
 }
 
-function saveLocalExcel(array $arr, array $data, string $name="", string $type="Xlsx")
+function saveLocalExcel(array $arr, array $data, string $name = "", string $type = "Xlsx")
 {
     //    $arr = ["A1"=>"创建时间","B1"=>"姓名","C1"=>"手机号","D1"=>"来源","E1"=>"身份",
     //        "F1"=>"付费状态","G1"=>"幼儿园","H1"=>"用户","I1"=>"地区","J1"=>"渠道","K1"=>"销售","L1"=>"运营"
@@ -68,9 +134,9 @@ function saveLocalExcel(array $arr, array $data, string $name="", string $type="
 
     //文件名处置
     if(empty($name)){
-        $name=time();
+        $name = date('YmdHis');
     }else{
-        $name = $name."_".time();
+        $name = $name."_".date('YmdHis');
     }
 
     //内容设置
@@ -99,6 +165,11 @@ function saveLocalExcel(array $arr, array $data, string $name="", string $type="
     $writer->save(LocalFilePath."$name.$type");
 }
 
+/**
+ * 读取excel文件内容
+ * @param $name
+ * @return array
+ */
 function readLocalExcel($name): array
 {
     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(LocalFilePath.$name);
@@ -106,6 +177,7 @@ function readLocalExcel($name): array
 }
 
 /**
+ * 工时计算。。
  * @param $filename
  * @return void
  */

@@ -7,5 +7,10 @@
  * Time: 11:09
  */
 return [
-    "test" => "select * from test_tb",
+    "sql1" => [
+        "type1" => [
+            "sql" => "select id, name, age, test_tb by id asc",
+            "column" => ["A1"=>"ID","B1"=>"姓名","C1"=>"年龄"，
+        ],
+    ],
 ];
