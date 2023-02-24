@@ -260,6 +260,7 @@ function calculateAttendanceForZhiJie($filename): void
         foreach ($staff_v as $clock_date => $clock_v) {
             $excel_data[] = [$clock_date, $staff_k, $clock_v["st"], $clock_v["et"], $clock_v[0], $clock_v[1], $clock_v["hours"], $clock_v["memo"]];
         }
+        $excel_data[] = ["汇总", $staff_k, "--", "--", "--", "--", array_sum(array_column($staff_v, "hours")), ""];
     }
     saveLocalExcel($arr_title, $excel_data, "$filename-工时计算");
 
