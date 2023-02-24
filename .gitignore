@@ -6,3 +6,5 @@ vendor
 config/database.php
 data_list
 storage
+data_list/log.php
+data_list/smp.php
