@@ -172,7 +172,7 @@ function saveLocalExcel(array $arr, array $data, string $name = "", string $type
  */
 function readLocalExcel($name): array
 {
-    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(LocalFilePath.$name);
+    $spreadsheet = IOFactory::load(LocalFilePath.$name);
     return $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 }
 
@@ -205,6 +205,9 @@ function calculateAttendanceForZhiJie($filename): void
 
         # 过滤 未打卡 类型
         if (false !== strstr($row["I"], "未打卡")) {
+            continue;
+        }
+        if (false !== strstr($row["I"], "--")) {
             continue;
         }
 
@@ -264,6 +267,7 @@ function calculateAttendanceForZhiJie($filename): void
 
             $origin_st = $clock_list[0];
             $origin_et = $clock_list[1];
+            //var_dump('======>',$clock_list);
             #下班打卡
             if (false !== strstr($clock_list[1], "次日")) {
                 $second = str_replace("次日", "", $clock_list[1]);
