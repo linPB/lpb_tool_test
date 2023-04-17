@@ -74,6 +74,18 @@ switch ($do_args["p"]){
             var_dump($e);
         }
         break;
+    case "data_clean":
+        try {
+            $fh = fopen('php://stdin', 'r');
+            echo "请输入要操作的文件名：";
+            $file_name = fread($fh, 1000);
+            echo "你输入的是：$file_name";
+
+            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile("storage/$file_name");
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+        break;
     default:
         echo "操作不允许".PHP_EOL;
         die();
