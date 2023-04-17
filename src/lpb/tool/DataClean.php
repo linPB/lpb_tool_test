@@ -13,15 +13,17 @@ class DataClean
 {
     private $target_file = "storage/";
 
-    public function parseDataFromFile(string $file_name) :void
+    public function parseDataFromFile(string $base_dir, string $file_name) :void
     {
-        $rows = file_get_contents($this->target_file . $file_name);
+        $file_info = trim($base_dir .'/'. $this->target_file . $file_name);
+        $rows = file_get_contents($file_info);
         $rows = explode("\r\n", $rows);
 
         $rows_arr = array_chunk($rows,100000,true);
         foreach ($rows_arr as $arr) {
-            $file = fopen($this->target_file . "/data_filter.txt","w");
+            $file = fopen($base_dir .'/'. $this->target_file . "/data_filter.txt","w");
             foreach ($arr as $item) {
+                if (empty($item)) continue;
                 list($uid, $mobile, ) = explode("\t", $item);
                 if ($uid === "user_id") {
                     continue;

@@ -81,7 +81,7 @@ switch ($do_args["p"]){
             $file_name = fread($fh, 1000);
             echo "你输入的是：$file_name";
 
-            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile("storage/$file_name");
+            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile(getcwd(), $file_name);
         } catch (Exception $e) {
             var_dump($e);
         }
