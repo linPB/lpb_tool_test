@@ -76,12 +76,13 @@ switch ($do_args["p"]){
         break;
     case "data_clean":
         try {
-            $fh = fopen('php://stdin', 'r');
-            echo "请输入要操作的文件名：";
-            $file_name = fread($fh, 1000);
-            echo "你输入的是：$file_name";
+//            $fh = fopen('php://stdin', 'r');
+//            echo "请输入要操作的文件名：";
+//            $file_name = fread($fh, 1000);
+//            echo "你输入的是：$file_name";
 
-            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile(getcwd(), $file_name);
+//            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile(getcwd(), "all_account_mobile_104.txt");
+            (new Linpeibing\LpbTool\DataClean)->parseDataFromFile(getcwd(), "test.txt");
         } catch (Exception $e) {
             var_dump($e);
         }
